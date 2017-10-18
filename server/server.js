@@ -16,10 +16,30 @@ app.use(express.static(publicPath));
 //connection event over the server
 //as the event fires the client prints New user connected 
 io.on('connection', (socket) => {//the event is called with a socket argument similar to the one from index
+    
     console.log('New user connected');
+    //this data will be sent from the servet to the client
+    socket.emit('newEmail', {
+        from: 'mike@example.com',
+        text:'Please die',
+        createAt: 123
+    })//creates the event instead of listening to it. Must be exactly as the one specified in the script
+    socket.on('createEmail', (newEmail) => {//in the arrow function we have the data expected to come along. Client -> server
+        console.log('createEmail', newEmail);
+    });
+    socket.emit('newMessage', {
+        from: 'John',
+        text: 'See you',
+        createdAt: 1231234
+    })
+    socket.on('createMessage', (newMessage) => {
+       console.log(newMessage);
+    });
+    
     socket.on('disconnect', () => {
         console.log('User was disconnected');
-    })
+    });
+
 });//listen to a connection.Lets you do something when a new connection comes in 
 //we can listen for a disconecting client and we can do something when that happens: in our case we prin a message
 server.listen(port, ()=>{//when you call app.listen it calls http.createServer() passing the app to the argument createServer
