@@ -4,9 +4,27 @@
     <head>
         <meta charset="utf-8">
     </head>
-    <body>
+    <body> 
         <p>
             Welcome to the chat app
         </p>
+        <!-- loading an external script (loads the file).Provides acces to all sorts of methods available because of the socket library 
+        One of this methods is going to allow us to initiate a connection request  -->
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+            //running js code 
+            //we initiate the request. We are making a request from the client to the server to open up a web socket and keep that connection open 
+            var socket = io(); //io() is a method  available to us because we loaded the script from the upper page 
+            //socket var is what we use to listen for data from the server and to send data to the server
+            //communication betweem the client and the server comes in form of event. Events can be emitted from either the client or the server and either the client or the server can listen for events 
+            //Events in an email app: the server might emit an event called 'new email' when an new email comes in 
+            //the client is going to listen to that event. When it fires it will get the new email data and then will render the email to the screen below to the other ones. 
+            socket.on('connect', ()=>{//on method is exactly like the one we used in server.js. We dont get acces to a socket argument because we already have it up above . (connection event over the client)
+                console.log('Connected to server');//as the event fires, the client prints Connected to server 
+            })
+            socket.on('disconnect', () => {
+                console.log('Disconnected from server');
+            })
+        </script>
     </body>
 </html>
