@@ -27,13 +27,18 @@ io.on('connection', (socket) => {//the event is called with a socket argument si
     socket.on('createEmail', (newEmail) => {//in the arrow function we have the data expected to come along. Client -> server
         console.log('createEmail', newEmail);
     });
-    socket.emit('newMessage', {
-        from: 'John',
-        text: 'See you',
-        createdAt: 1231234
-    })
-    socket.on('createMessage', (newMessage) => {
-       console.log(newMessage);
+    // socket.emit('newMessage', {//socket.emit, emits an event to a single connection
+    //     from: 'John',
+    //     text: 'See you',
+    //     createdAt: 1231234
+    // })
+    socket.on('createMessage', (message) => {
+       console.log(message);
+       io.emit('newMessage', {//emits an event to every single connection 
+            from: message.from,
+            text: message.text,
+            createdAt: new Date().getTime()
+       });
     });
     
     socket.on('disconnect', () => {

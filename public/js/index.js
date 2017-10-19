@@ -15,10 +15,10 @@ socket.on('connect', function(){//on method is exactly like the one we used in s
         to: 'jen@example.com',
         text: 'Hey. Let`s pizza' 
     })
-    socket.emit('createMessage', {
-        from: 'Vlad',
-        text: 'Hi'
-     })
+    // socket.emit('createMessage', {
+    //     from: 'Vlad',
+    //     text: 'Hi'
+    // });
 })
  socket.on('disconnect', function(){
     console.log('Disconnected from server');
