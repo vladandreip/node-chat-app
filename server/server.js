@@ -32,18 +32,36 @@ io.on('connection', (socket) => {//the event is called with a socket argument si
     //     text: 'See you',
     //     createdAt: 1231234
     // })
+
+    socket.emit('newMessage', {
+        from: 'Admin',
+        text: 'Welcome to the chat app',
+        createdAt: new Date().getDate()
+    });
+    socket.broadcast.emit('newMessage', {
+        from: 'Admin',
+        text: 'New user joined the chanel',
+        createdAt: new Date().getDate()
+    })
     socket.on('createMessage', (message) => {
        console.log(message);
+      
        io.emit('newMessage', {//emits an event to every single connection 
             from: message.from,
             text: message.text,
             createdAt: new Date().getTime()
        });
-    });
     
+    // socket.broadcast.emit('newMessage', {//emits to everyone exccept for this socket(user)
+    //     from: message.from,
+    //     text: message.text,
+    //     createdAt: new Date().getTime()
+    // });
+});
     socket.on('disconnect', () => {
         console.log('User was disconnected');
     });
+
 
 });//listen to a connection.Lets you do something when a new connection comes in 
 //we can listen for a disconecting client and we can do something when that happens: in our case we prin a message
