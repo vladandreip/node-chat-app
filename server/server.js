@@ -4,6 +4,7 @@ const path = require('path');
 const http = require('http');
 const express = require('express');
 const socketIO = require('socket.io')
+const {generateMessage} = require('./utils/message');
 
 const publicPath = path.join(__dirname, '../public');
 const port = process.env.PORT || 3000;//for 
@@ -33,24 +34,12 @@ io.on('connection', (socket) => {//the event is called with a socket argument si
     //     createdAt: 1231234
     // })
 
-    socket.emit('newMessage', {
-        from: 'Admin',
-        text: 'Welcome to the chat app',
-        createdAt: new Date().getDate()
-    });
-    socket.broadcast.emit('newMessage', {
-        from: 'Admin',
-        text: 'New user joined the chanel',
-        createdAt: new Date().getDate()
-    })
+    socket.emit('newMessage', generateMessage('Admin','Welcome to the chat app'));
+    socket.broadcast.emit('newMessage', generateMessage('Admin','New user joined'))
     socket.on('createMessage', (message) => {
        console.log(message);
-      
-       io.emit('newMessage', {//emits an event to every single connection 
-            from: message.from,
-            text: message.text,
-            createdAt: new Date().getTime()
-       });
+      //emits an event to every single connection 
+       io.emit('newMessage', generateMessage(message.from,message.text));//when a user sends a message we want all of our users to see that message 
     
     // socket.broadcast.emit('newMessage', {//emits to everyone exccept for this socket(user)
     //     from: message.from,
