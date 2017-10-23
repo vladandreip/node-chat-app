@@ -29,4 +29,22 @@ socket.on('newEmail', function(email){//the data that is emited from your event 
 
 socket.on('newMessage', function(message){
     console.log('New message',message);
+    var li = jQuery('<li></li>');//creating elements with jquery
+    li.text(`${message.from}: ${message.text}`)
+    jQuery('#messages').append(li);
 })
+socket.emit('createMessage', {
+    from: 'Frank',
+    text: 'Hi'
+}, function(data) {
+    console.log('Got it', data);//add an aknoledgment to the client. Data flowed from the server to the client 
+});
+jQuery('#message-form').on('submit', function(e){
+    e.preventDefault();//prevents page refresh
+    socket.emit('createMessage', {
+        from: 'User',
+        text: jQuery('[name=message]').val() //gets the value from the message form 
+    }, function(){
+
+    });
+});//selects the message form 
