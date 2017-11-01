@@ -41,12 +41,13 @@ socket.emit('createMessage', {
 });
 jQuery('#message-form').on('submit', function(e){
     e.preventDefault();//prevents page refresh
+    var messageTextBox = jQuery('[name=message]');
     socket.emit('createMessage', {
         from: 'User',
-        text: jQuery('[name=message]').val() //gets the value from the message form 
+        text: messageTextBox.val() //gets the value from the message form 
         
     }, function(){
-
+        messageTextBox.val('');//after you send the message, you want to clear the place where you typed that message 
     });
 });//selects the message form 
 socket.on('newLocationMessage', function(message){
@@ -63,13 +64,16 @@ locationButton.on('click', function() {//adds a listener, equivalent to jQuery('
     if(!navigator.geolocation){
         return alert('Geolocation not supported by your browser')//default alert button 
     }
+    locationButton.attr('disabled', 'disabled').text('Sending location...');//the disabled attribute equal to the disabled. Blocks the send button when we send the location to prevent spam sending(dureaza cateva secunde sa se trimita locatia )
     navigator.geolocation.getCurrentPosition(function (position){//first argument is the executing function that returns the location of the user
         //success case
+        locationButton.removeAttr('disabled').text("Send location");//removes the disabled attribute we difined above, reanabling the button 
         socket.emit('createLocationMessage', {
             latitude: position.coords.latitude,
             langitude: position.coords.longitude
         })
     }, function(){//second function is the error function
+        locationButton.removeAttr('disabled').text("Send location");
         alert('Unable to fetch location.');
     });
 });

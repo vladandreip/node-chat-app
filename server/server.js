@@ -40,7 +40,7 @@ io.on('connection', (socket) => {//the event is called with a socket argument si
        console.log(message);
       //emits an event to every single connection 
        io.emit('newMessage', generateMessage(message.from,message.text));//when a user sends a message we want all of our users to see that message 
-       callback('This is from the server');//will. This shows that the data succesfully reached the server and a message printed. You can send data back by adding a param in the function
+       callback('');//will. This shows that the data succesfully reached the server and a message printed. You can send data back by adding a param in the function
     // socket.broadcast.emit('newMessage', {//emits to everyone exccept for this socket(user)
     //     from: message.from,
     //     text: message.text,

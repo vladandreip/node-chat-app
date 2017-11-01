@@ -3,19 +3,33 @@
 <html>
     <head>
         <meta charset="utf-8">
+        <link rel="stylesheet" href="/css/styles.css">
     </head>
-    <body> 
-        <p>
-            Welcome to the chat app
-        </p>
-        <ol id="messages"></ol>
-        <!-- loading an external script (loads the file).Provides acces to all sorts of methods available because of the socket library 
-        One of this methods is going to allow us to initiate a connection request  -->
-        <form id="message-form">
-            <input name="message", type="text" placeholder="Message"/>
-            <button>Send</button>
-        </form>
-        <button id="send-location">Send location</button>
+    <!-- loads the styles for the chat page -->
+    <body class="chat"> 
+        <!-- people list from the left -->
+       <div class="chat__sidebar">
+            <h3>People</h3>
+            <!-- individual user -->
+            <div id="users"></div>
+       </div>
+       <!-- Main arrea: chat messages and form at the bottom -->
+       <div class="chat__main">
+           <!-- footer: gray bar at the bottom that contains both your form as well as the send location button  -->
+            <ol id="messages" class="chat__messages"></ol>
+            <!-- loading an external script (loads the file).Provides acces to all sorts of methods available because of the socket library 
+            One of this methods is going to allow us to initiate a connection request  -->
+            <div class="chat__footer">
+                    <form id="message-form">
+                            <!-- focusing on the message area -->
+                            <input name="message", type="text" placeholder="Message" autofocus autocomplete="off"/>
+                            <button>Send</button>
+                        </form>
+                        <button id="send-location">Send location</button>
+            </div>
+            
+       </div>
+       
         <script src="/socket.io/socket.io.js"></script>
         <script src="/js/libs/jquery-3.2.1.min.js"></script>
         <script src="/js/index.js"></script>
