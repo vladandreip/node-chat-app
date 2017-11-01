@@ -1,4 +1,4 @@
-//loads when we load index.html
+//loads when we load index.html !!!!!!!!!!!!!!!!!!!!!!!!!
  //better use function keywords because in some cases(safari, mobiles) the arrow functions wont be recognised and the app will crash
             //running js code 
             //we initiate the request. We are making a request from the client to the server to open up a web socket and keep that connection open 
@@ -28,17 +28,30 @@ socket.on('newEmail', function(email){//the data that is emited from your event 
 })
 
 socket.on('newMessage', function(message){
-    var formattedTime = moment(message.createdAt).format('h:mm a');
-    var li = jQuery('<li></li>');//creating elements with jquery
-    li.text(`${message.from} ${formattedTime}: ${message.text}`)
-    jQuery('#messages').append(li);
+     var formattedTime = moment(message.createdAt).format('h:mm a');
+    // var li = jQuery('<li></li>');//creating elements with jquery
+    // li.text(`${message.from} ${formattedTime}: ${message.text}`)
+    // jQuery('#messages').append(li);
+  
+    var template = jQuery('#message-template').html();//takes the html template
+    console.log(template);
+       //this is what we are going to add to the browser 
+    var html = Mustache.render(template, {
+        text:message.text,
+        from:message.from,
+        createdAt: formattedTime
+    });//offers and html object by using the Mustache templeting 
+    console.log(html);
+    jQuery('#messages').append(html);
+    
 });
-socket.emit('createMessage', {
-    from: 'Frank',
-    text: 'Hi'
-}, function(data) {
-    console.log('Got it', data);//add an aknoledgment to the client. Data flowed from the server to the client 
-});
+// socket.emit('createMessage', {
+//     from: 'Frank',
+//     text: 'Hi'
+// }, function(data) {
+//     console.log('Got it', data);//add an aknoledgment to the client. Data flowed from the server to the client 
+// });
+
 jQuery('#message-form').on('submit', function(e){
     e.preventDefault();//prevents page refresh
     var messageTextBox = jQuery('[name=message]');
@@ -52,12 +65,19 @@ jQuery('#message-form').on('submit', function(e){
 });//selects the message form 
 socket.on('newLocationMessage', function(message){
     var formattedTime = moment(message.createdAt).format('h:mm a');
-    var li = jQuery('<li></li>');//creates a list item 
-    var a = jQuery('<a target="_blank">My current location:</a>')//a represents anchor tag. When you tell _blank, you tell the url to open in a new tab 
-    li.text(`${message.from} ${formattedTime}`);
-    a.attr('href', message.url);//update our anchor tab, sets attr
-    li.append(a);
-    jQuery('#messages').append(li);
+    // var li = jQuery('<li></li>');//creates a list item 
+    // var a = jQuery('<a target="_blank">My current location:</a>')//a represents anchor tag. When you tell _blank, you tell the url to open in a new tab 
+    // li.text(`${message.from} ${formattedTime}`);
+    // a.attr('href', message.url);//update our anchor tab, sets attr
+    // li.append(a);
+    var template = jQuery('#location-message-template').html();
+    var html = Mustache.render(template,{
+        from:message.from,
+        createdAt: formattedTime,
+        url: message.url
+    });
+    //jQuery('#messages').append(li);
+    jQuery('#messages').append(html);
 });
 
 var locationButton = jQuery('#send-location')//jQuery selector that targets the button we just created 

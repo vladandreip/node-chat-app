@@ -29,10 +29,42 @@
             </div>
             
        </div>
-       
+       <!-- type lets your editor and the browser know what is stored inside of the script tag -->
+        <script id="message-template" type="text/template"> 
+            <p>
+                <li class="message">
+                    <div class="message__title">
+                        <h4>{{from}}</h4>
+                        <span>{{createdAt}}</span>
+                    </div>
+                    <div class="message__body">
+                        <p>
+                            {{text}}
+                        </p>
+                    </div>
+                </li>
+            </p>
+        </script>
+        <script id="location-message-template" type="text/template"> 
+            <p>
+                <li class="message">
+                    <div class="message__title">
+                        <h4>{{from}}</h4>
+                        <span>{{createdAt}}</span>
+                    </div>
+                    <div class="message__body">
+                        <p>
+                            <a href={{url}} target="_blank">My current location</a>
+                                <!-- _blank opens the url in a new tab -->
+                        </p>
+                    </div>
+                </li>
+            </p>
+        </script>
         <script src="/socket.io/socket.io.js"></script>
         <script src="/js/libs/jquery-3.2.1.min.js"></script>
         <script src="/js/libs/moment.js"></script>
         <script src="/js/index.js"></script>
+        <script src="/js/libs/mustache.js"></script>
     </body>
 </html>
