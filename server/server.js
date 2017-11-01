@@ -22,7 +22,7 @@ io.on('connection', (socket) => {//the event is called with a socket argument si
     //this data will be sent from the servet to the client
     socket.emit('newEmail', {
         from: 'mike@example.com',
-        text:'Please die',
+        text:'Message',
         createAt: 123
     })//creates the event instead of listening to it. Must be exactly as the one specified in the script
     socket.on('createEmail', (newEmail) => {//in the arrow function we have the data expected to come along. Client -> server

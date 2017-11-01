@@ -28,11 +28,11 @@ socket.on('newEmail', function(email){//the data that is emited from your event 
 })
 
 socket.on('newMessage', function(message){
-    console.log('New message',message);
+    var formattedTime = moment(message.createdAt).format('h:mm a');
     var li = jQuery('<li></li>');//creating elements with jquery
-    li.text(`${message.from}: ${message.text}`)
+    li.text(`${message.from} ${formattedTime}: ${message.text}`)
     jQuery('#messages').append(li);
-})
+});
 socket.emit('createMessage', {
     from: 'Frank',
     text: 'Hi'
@@ -51,9 +51,10 @@ jQuery('#message-form').on('submit', function(e){
     });
 });//selects the message form 
 socket.on('newLocationMessage', function(message){
+    var formattedTime = moment(message.createdAt).format('h:mm a');
     var li = jQuery('<li></li>');//creates a list item 
-    var a = jQuery('<a target="_blank">My current location</a>')//a represents anchor tag. When you tell _blank, you tell the url to open in a new tab 
-    li.text(`${message.from}`);
+    var a = jQuery('<a target="_blank">My current location:</a>')//a represents anchor tag. When you tell _blank, you tell the url to open in a new tab 
+    li.text(`${message.from} ${formattedTime}`);
     a.attr('href', message.url);//update our anchor tab, sets attr
     li.append(a);
     jQuery('#messages').append(li);
