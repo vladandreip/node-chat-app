@@ -7,6 +7,22 @@
             //communication betweem the client and the server comes in form of event. Events can be emitted from either the client or the server and either the client or the server can listen for events 
             //Events in an email app: the server might emit an event called 'new email' when an new email comes in 
             //the client is going to listen to that event. When it fires it will get the new email data and then will render the email to the screen below to the other ones. 
+function scrollToBottom() {
+    // Selectors
+    var messages = jQuery('#messages');
+    var newMessage = messages.children('li:last-child');//for the last list item
+    //Heights
+    var clientHeight = messages.prop('clientHeight');
+    var scrollTop = messages.prop('scrollTop');
+    var scrollHeight = messages.prop('scrollHeight');
+    var newMessageHeight = newMessage.innerHeight();
+    var lastMessageHeight = newMessage.prev().innerHeight();
+    if(clientHeight + scrollTop + newMessageHeight + lastMessageHeight >= scrollHeight){
+        messages.scrollTop(scrollHeight);//moves to the bottom of the messaging area
+    }
+
+}
+
 socket.on('connect', function(){//on method is exactly like the one we used in server.js. We dont get acces to a socket argument because we already have it up above . (connection event over the client)
     console.log('Connected to server');//as the event fires, the client prints Connected to server 
     //i don't want to emit the event until we are connected 
@@ -43,6 +59,7 @@ socket.on('newMessage', function(message){
     });//offers and html object by using the Mustache templeting 
     console.log(html);
     jQuery('#messages').append(html);
+    scrollToBottom();
     
 });
 // socket.emit('createMessage', {
@@ -78,6 +95,7 @@ socket.on('newLocationMessage', function(message){
     });
     //jQuery('#messages').append(li);
     jQuery('#messages').append(html);
+    scrollToBottom();
 });
 
 var locationButton = jQuery('#send-location')//jQuery selector that targets the button we just created 
