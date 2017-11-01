@@ -44,7 +44,32 @@ jQuery('#message-form').on('submit', function(e){
     socket.emit('createMessage', {
         from: 'User',
         text: jQuery('[name=message]').val() //gets the value from the message form 
+        
     }, function(){
 
     });
 });//selects the message form 
+socket.on('newLocationMessage', function(message){
+    var li = jQuery('<li></li>');//creates a list item 
+    var a = jQuery('<a target="_blank">My current location</a>')//a represents anchor tag. When you tell _blank, you tell the url to open in a new tab 
+    li.text(`${message.from}`);
+    a.attr('href', message.url);//update our anchor tab, sets attr
+    li.append(a);
+    jQuery('#messages').append(li);
+});
+
+var locationButton = jQuery('#send-location')//jQuery selector that targets the button we just created 
+locationButton.on('click', function() {//adds a listener, equivalent to jQuery('#send-location').on     Adds the click event and a callback function for the click event
+    if(!navigator.geolocation){
+        return alert('Geolocation not supported by your browser')//default alert button 
+    }
+    navigator.geolocation.getCurrentPosition(function (position){//first argument is the executing function that returns the location of the user
+        //success case
+        socket.emit('createLocationMessage', {
+            latitude: position.coords.latitude,
+            langitude: position.coords.longitude
+        })
+    }, function(){//second function is the error function
+        alert('Unable to fetch location.');
+    });
+});
