@@ -24,17 +24,27 @@ function scrollToBottom() {
 }
 
 socket.on('connect', function(){//on method is exactly like the one we used in server.js. We dont get acces to a socket argument because we already have it up above . (connection event over the client)
-    console.log('Connected to server');//as the event fires, the client prints Connected to server 
+    // console.log('Connected to server');//as the event fires, the client prints Connected to server 
     //i don't want to emit the event until we are connected 
-    socket.emit('createEmail',{
-        //in a real application a user would have filled up some forms. Take the text from the forms and send it
-        to: 'jen@example.com',
-        text: 'Hey. Let`s pizza' 
-    })
+    // socket.emit('createEmail',{
+    //     //in a real application a user would have filled up some forms. Take the text from the forms and send it
+    //     to: 'jen@example.com',
+    //     text: 'Hey. Let`s pizza' 
+    // })
     // socket.emit('createMessage', {
     //     from: 'Vlad',
     //     text: 'Hi'
     // });
+    var params = jQuery.deparam(window.location.search);
+    
+    socket.emit('join',params, function(err){
+        if(err){
+            alert(err);//user will click a
+            window.location.href = '/';//we can manipulate wich page the user is on 
+        }else{
+             console.log('No error');
+        }
+    })
 })
  socket.on('disconnect', function(){
     console.log('Disconnected from server');
