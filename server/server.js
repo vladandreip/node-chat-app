@@ -58,9 +58,13 @@ io.on('connection', (socket) => {//the event is called with a socket argument si
         callback();
     });
     socket.on('createMessage', (message, callback) => {
-       console.log(message);
+       var user = users.getUser(socket.id);
+       if(user && isRealString(message.text))//if user exists
+       {
+            io.to(user.room).emit('newMessage', generateMessage(user.name,message.text));//when a user sends a message we want all of our users to see that message 
+       }
       //emits an event to every single connection 
-       io.emit('newMessage', generateMessage(message.from,message.text));//when a user sends a message we want all of our users to see that message 
+      
        callback('');//will. This shows that the data succesfully reached the server and a message printed. You can send data back by adding a param in the function
     // socket.broadcast.emit('newMessage', {//emits to everyone exccept for this socket(user)
     //     from: message.from,
@@ -69,7 +73,8 @@ io.on('connection', (socket) => {//the event is called with a socket argument si
     // });
 });
 socket.on('createLocationMessage',(coords) => {
-    io.emit('newLocationMessage', generateLocationMessage('Admin', coords.latitude, coords.longitude));
+    user = users.getUser(socket.id);
+    io.to(user.room).emit('newLocationMessage', generateLocationMessage(user.name, coords.latitude, coords.longitude));
 })
     socket.on('disconnect', () => {
         var user = users.removeUser(socket.id);
