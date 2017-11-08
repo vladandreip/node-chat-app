@@ -35,7 +35,8 @@ socket.on('connect', function(){//on method is exactly like the one we used in s
     //     from: 'Vlad',
     //     text: 'Hi'
     // });
-    var params = jQuery.deparam(window.location.search);
+    
+    var params = jQuery.deparam(window.location.search);//params ia parametrii din querry si face un object cu el
     
     socket.emit('join',params, function(err){
         if(err){
@@ -49,6 +50,14 @@ socket.on('connect', function(){//on method is exactly like the one we used in s
  socket.on('disconnect', function(){
     console.log('Disconnected from server');
 })
+socket.on('updateUserList', function(users){
+   var ol = jQuery('<ol></ol>')
+    users.forEach(function (user){
+        ol.append(jQuery('<li></li>').text(user));
+    });
+
+    jQuery('#users').html(ol);//randeaza in chat.html la users
+});
 socket.on('newEmail', function(email){//the data that is emited from your event in server.js is provided as the first argument to your callback function 
     console.log('New email', email);
 })

@@ -6,6 +6,7 @@ const express = require('express');
 const socketIO = require('socket.io')
 const {generateMessage,generateLocationMessage} = require('./utils/message');
 const {isRealString} = require('./utils/validation')
+const {Users} = require('./utils/users');
 
 const publicPath = path.join(__dirname, '../public');
 const port = process.env.PORT || 3000;//for 
@@ -14,6 +15,7 @@ var server = http.createServer(app);//we are using the http server as opposed to
 //console.log(__dirname + '/../public');
 //console.log(publicPath)
 var io = socketIO(server);//we get back our web sockets server.This is how we are going to communicate between the server and the client.We are ready to accept new connections
+var users = new Users();
 app.use(express.static(publicPath));
 //connection event over the server
 //as the event fires the client prints New user connected 
@@ -35,13 +37,24 @@ io.on('connection', (socket) => {//the event is called with a socket argument si
     //     createdAt: 1231234
     // })
 
-    socket.emit('newMessage', generateMessage('Admin','Welcome to the chat app'));
-    socket.broadcast.emit('newMessage', generateMessage('Admin','New user joined'))
+   
     socket.on('join', (params, callback) => {
-        if(isRealString(params.name) || !isRealString(params.room)){
-            callback('Name and room name are required.');
+        if(!isRealString(params.name) || !isRealString(params.room)){
+            return callback('Name and room name are required.');//with return we stop the function execution
 
         }
+        socket.join(params.room);//joins people by the join value 
+        //socket.leave('Room name') -> to leave a room. Kicks you out of the group and you cand receive private messages 
+
+        //io.emit -> emits it to everyone
+        //io.to('The office fans').emit -> emits to all the users connected to 'The office fans room'
+        //socket.broadcast.emit -> emits to everyone from the socket server expect for the sender
+        //socket.emit -> emits message to a specific user 
+        users.removeUser(socket.id);//removes users from potentialy other chat room
+        users.addUser(socket.id, params.name, params.room);//then we add them to the new chat room
+        io.to(params.room).emit('updateUserList', users.getUserList(params.room));//sends the users list from a specified chat room  
+        socket.emit('newMessage', generateMessage('Admin','Welcome to the chat app'));
+        socket.broadcast.to(params.room).emit('newMessage', generateMessage('Admin',`${params.name} has joined`))
         callback();
     });
     socket.on('createMessage', (message, callback) => {
@@ -59,7 +72,11 @@ socket.on('createLocationMessage',(coords) => {
     io.emit('newLocationMessage', generateLocationMessage('Admin', coords.latitude, coords.longitude));
 })
     socket.on('disconnect', () => {
-        console.log('User was disconnected');
+        var user = users.removeUser(socket.id);
+        if(user){
+            io.to(user.room).emit('updateUserList', users.getUserList(user.room));
+            io.to(user.room).emit('newMessage', generateMessage('Admin', `${user.name} has left.`));
+        }
     });
 
 
